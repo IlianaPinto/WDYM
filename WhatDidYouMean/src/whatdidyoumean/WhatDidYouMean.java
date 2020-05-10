@@ -201,7 +201,7 @@ public class WhatDidYouMean {
                 }
                 break;
             default:
-                if (Pattern.matches("[ñ{ploikj,.][adewsqzxf]", tokens.get(0))) {//ls
+                if (Pattern.matches("[{kjl][asdf]", tokens.get(0))) {//ls
                     if (verificar(tokens.get(0))) {
                         ls();
                     } else {
@@ -247,7 +247,7 @@ public class WhatDidYouMean {
                                 break;
                             case 2:
                                 ping(tokens.get(1));
-                                guardarArchivo(tokens.get(0));
+                                if(!verificar(tokens.get(0))) guardarArchivo(tokens.get(0));
                                 break;
                             default:
                                 System.err.println("More arguments than expected");
