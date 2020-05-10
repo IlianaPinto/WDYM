@@ -109,7 +109,7 @@ public class WhatDidYouMean {
                 if (tokens.size() == 1) {
                     ls();
                 } else {
-                    System.out.println("\"" + tokens.get(1) + "\" is not recognizable");
+                    System.err.println("\"" + tokens.get(1) + "\" is not recognizable");
                 }
                 break;
             case "gzip":
@@ -121,17 +121,17 @@ public class WhatDidYouMean {
                 }
                 break;
             case "ping":
-        switch (tokens.size()) {
-            case 2:
-                ping(tokens.get(1));
-                break;
-            case 1:
-                System.err.println("Incomplete command ping");
-                break;
-            default:
-                System.err.println("More arguments than expected");
-                break;
-        }
+                switch (tokens.size()) {
+                    case 2:
+                        ping(tokens.get(1));
+                        break;
+                    case 1:
+                        System.err.println("Incomplete command ping");
+                        break;
+                    default:
+                        System.err.println("More arguments than expected");
+                        break;
+                }
                 break;
             default:
                 if (Pattern.matches("[ñ{ploikj,.][adewsqzxf]", input)) {//ls
@@ -170,7 +170,7 @@ public class WhatDidYouMean {
                                 System.err.println("More arguments than expected");
                                 break;
                         }
-                        
+
                     } else {
                         System.out.println("Ok!");
                     }
