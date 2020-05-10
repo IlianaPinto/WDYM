@@ -22,19 +22,18 @@ public class WhatDidYouMean {
         Scanner sc = new Scanner(System.in);
 
         while (true) {
-            System.out.print(">: ");
+            System.out.print(":> ");
             String input = sc.nextLine();
             if (input.equalsIgnoreCase("exit")) {
                 break;
             }
             tokenizer(input);
-        }
 
-        //guardarZIP("C:/Users/Jetstereo/OneDrive/Desktop/Prueba.txt", "C:/Users/Jetstereo/OneDrive/Desktop/comprimido.zip");
+        }
     }
 
     public static void ls() {
-        String directorio = "c:\\";
+        String directorio = "./";
         File f = new File(directorio);
         if (f.exists()) {
             File[] ficheros = f.listFiles();
@@ -61,14 +60,14 @@ public class WhatDidYouMean {
         }
     }
 
-    public static void guardarZIP(String archivo, String nombreZip) {
+    public static void guardarZIP(String archivo, String nombreZip, String nombre) {
         File aZipear = new File(archivo);
         if (aZipear.exists()) {
             try {
                 FileOutputStream fos = new FileOutputStream(nombreZip);
                 ZipOutputStream zos = new ZipOutputStream(fos);
 
-                ZipEntry entradaZIP = new ZipEntry("subcarpeta/texto.txt");
+                ZipEntry entradaZIP = new ZipEntry(nombre + ".txt");
                 zos.putNextEntry(entradaZIP);
                 FileInputStream fis = new FileInputStream(archivo);
 
@@ -83,15 +82,14 @@ public class WhatDidYouMean {
                 zos.close();
                 fos.close();
 
-                System.out.println("Archivo zip creado exitosamente!");
-
+                // System.out.println("Archivo "+nombre+".zip creado exitosamente!");
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            System.err.println("El archivo a comprimir no existe!");
+            System.err.println(nombre + " does not exist");
         }
     }
 
@@ -116,63 +114,70 @@ public class WhatDidYouMean {
                 break;
             case "gzip":
                 for (int i = 1; i < tokens.size(); i++) {
-                    guardarZIP("C:/Users/Jetstereo/OneDrive/Desktop/"+tokens.get(i), "C:/Users/Jetstereo/OneDrive/Desktop/"+tokens.get(i)+".zip");
+                    guardarZIP("./" + tokens.get(i), "./" + tokens.get(i) + ".zip", tokens.get(i));
+                }
+                if (tokens.size() == 1) {
+                    System.err.println("Incomplete command gzip");
                 }
                 break;
             case "ping":
+        switch (tokens.size()) {
+            case 2:
                 ping(tokens.get(1));
                 break;
+            case 1:
+                System.err.println("Incomplete command ping");
+                break;
             default:
-                String regex;
-                switch (tokens.get(0).charAt(0)) {
-                    case 'l':
-                        regex = "[ñ{ploikj,.][adewsqzxf]";
-                        if (Pattern.matches(regex, input)) {
-                            System.out.println("Did you mean ls?[y/n]");
-                            String resp = sc.next();
-                            if (resp.equalsIgnoreCase("y")) {
-                                ls();
-                            } else {
-                                System.out.println("Ok!");
-                            }
-                        } else {
-                            System.err.println("Sorry, \"" + tokens.get(0) + "\" is not recognized 😕");
+                System.err.println("More arguments than expected");
+                break;
+        }
+                break;
+            default:
+                if (Pattern.matches("[ñ{ploikj,.][adewsqzxf]", input)) {//ls
+                    System.out.println("Did you mean ls?[y/n]");
+                    String resp = sc.next();
+                    if (resp.equalsIgnoreCase("y")) {
+                        ls();
+                    } else {
+                        System.out.println("Ok!");
+                    }
+                } else if (Pattern.matches("[gfdhj][xcz][iopuy][oi+p]", input)) {//gzip
+                    System.out.println("Did you mean gzip?[y/n]");
+                    String resp = sc.next();
+                    if (resp.equalsIgnoreCase("y")) {
+                        for (int i = 1; i < tokens.size(); i++) {
+                            guardarZIP("./" + tokens.get(i), "./" + tokens.get(i) + ".zip", tokens.get(i));
                         }
-                        break;
-                    case 'g':
-                        regex = "[gfdhj][xcz][iopuy][oi´+p]";
-                        if (Pattern.matches(regex, input)) {
-                            System.out.println("Did you mean gzip?[y/n]");
-                            String resp = sc.next();
-                            if (resp.equalsIgnoreCase("y")) {
-                                ls();
-                            } else {
-                                System.out.println("Ok!");
-                            }
-                        } else {
-                            System.err.println("Sorry, \"" + tokens.get(0) + "\" is not recognized 😕");
+                        if (tokens.size() == 1) {
+                            System.err.println("Incomplete command gzip");
                         }
-                        break;
-                    case 'p':
-                        regex = "[p+oi][iopuy][nm,bv][ghjfd]";
-                        if (Pattern.matches(regex, input)) {
-                            System.out.println("Did you mean ping?[y/n]");
-                            String resp = sc.next();
-                            if (resp.equalsIgnoreCase("y")) {
-                                ls();
-                            } else {
-                                System.out.println("Ok!");
-                            }
-                        } else {
-                            System.err.println("Sorry, \"" + tokens.get(0) + "\" is not recognized 😕");
+                    } else {
+                        System.out.println("Ok!");
+                    }
+                } else if (Pattern.matches("[p+oi][iopuy][nm,bv][ghjfd]", input)) {//ping
+                    System.out.println("Did you mean ping?[y/n]");
+                    String resp = sc.next();
+                    if (resp.equalsIgnoreCase("y")) {
+                        switch (tokens.size()) {
+                            case 1:
+                                System.err.println("Incomplete command ping");
+                                break;
+                            case 2:
+                                ping(tokens.get(1));
+                                break;
+                            default:
+                                System.err.println("More arguments than expected");
+                                break;
                         }
-                        break;
-                    default:
-                        System.err.println("Sorry, \"" + tokens.get(0) + "\" is not recognized 😕");
-                        break;
+                        
+                    } else {
+                        System.out.println("Ok!");
+                    }
+                } else {
+                    System.err.println("Sorry, \"" + tokens.get(0) + "\" is not recognized 😕");
                 }
                 break;
         }
-        
     }
 }
