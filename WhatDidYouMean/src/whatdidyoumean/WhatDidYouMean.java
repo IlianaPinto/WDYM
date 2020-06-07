@@ -26,7 +26,6 @@ public class WhatDidYouMean {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-
         while (true) {
             System.out.print(":> ");
             String input = sc.nextLine();
@@ -34,7 +33,6 @@ public class WhatDidYouMean {
                 break;
             }
             tokenizer(input);
-
         }
     }
 
@@ -56,13 +54,13 @@ public class WhatDidYouMean {
         try {
             inet = InetAddress.getByName(ip);
         } catch (UnknownHostException ex) {
-            Logger.getLogger(WhatDidYouMean.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(WhatDidYouMean.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println("Sending Ping Request to " + ip);
         try {
             System.out.println(inet.isReachable(5000) ? "Host is reachable" : "Host is NOT reachable");
         } catch (IOException ex) {
-            Logger.getLogger(WhatDidYouMean.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(WhatDidYouMean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -160,6 +158,38 @@ public class WhatDidYouMean {
         return ver;
     }
 
+    public static void correrGzip(ArrayList<String> tokens) {
+        for (int i = 1; i < tokens.size(); i++) {
+            guardarZIP("./" + tokens.get(i), "./" + tokens.get(i) + ".zip", tokens.get(i));
+        }
+        if (tokens.size() == 1) {
+            System.err.println("Incomplete command gzip");
+        }
+        if (!verificar(tokens.get(0))) {
+            guardarArchivo(tokens.get(0));
+        }
+    }
+
+    public static void correrPing(ArrayList<String> tokens) {
+        switch (tokens.size()) {
+            case 1:
+                System.err.println("Incomplete command ping");
+                if (!verificar(tokens.get(0))) {
+                    guardarArchivo(tokens.get(0));
+                }
+                break;
+            case 2:
+                ping(tokens.get(1));
+                if (!verificar(tokens.get(0))) {
+                    guardarArchivo(tokens.get(0));
+                }
+                break;
+            default:
+                System.err.println("More arguments than expected");
+                break;
+        }
+    }
+
     public static void tokenizer(String input) {
         Scanner sc = new Scanner(System.in);
         ArrayList<String> tokens = new ArrayList();
@@ -171,114 +201,46 @@ public class WhatDidYouMean {
         }
 
         //verificar input 
-        switch (tokens.get(0)) {
-            case "ls":
-                if (tokens.size() == 1) {
+        if (Pattern.matches("[{kjl][asdf]", tokens.get(0))) {//ls
+            if (verificar(tokens.get(0))) {
+                ls();
+            } else {
+                System.out.println("Did you mean ls?[y/n]");
+                String resp = sc.next();
+                if (resp.equalsIgnoreCase("y")) {
                     ls();
-                } else {
-                    System.err.println("\"" + tokens.get(1) + "\" is not recognizable");
-                }
-                break;
-            case "gzip":
-                for (int i = 1; i < tokens.size(); i++) {
-                    guardarZIP("./" + tokens.get(i), "./" + tokens.get(i) + ".zip", tokens.get(i));
-                }
-                if (tokens.size() == 1) {
-                    System.err.println("Incomplete command gzip");
-                }
-                break;
-            case "ping":
-                switch (tokens.size()) {
-                    case 2:
-                        ping(tokens.get(1));
-                        break;
-                    case 1:
-                        System.err.println("Incomplete command ping");
-                        break;
-                    default:
-                        System.err.println("More arguments than expected");
-                        break;
-                }
-                break;
-            default:
-                if (Pattern.matches("[{kjl][asdf]", tokens.get(0))) {//ls
-                    if (verificar(tokens.get(0))) {
-                        ls();
-                    } else {
-                        System.out.println("Did you mean ls?[y/n]");
-                        String resp = sc.next();
-                        if (resp.equalsIgnoreCase("y")) {
-                            ls();
-                            guardarArchivo(tokens.get(0));
-                        } else {
-                            System.out.println("Ok!");
-                        }
+                    if (!verificar(tokens.get(0))) {
+                        guardarArchivo(tokens.get(0));
                     }
-                } else if (Pattern.matches("[gfdhj][xcz][iopuy][oi+p]", tokens.get(0))) {//gzip
-                    if (verificar(tokens.get(0))) {
-                        for (int i = 1; i < tokens.size(); i++) {
-                            guardarZIP("./" + tokens.get(i), "./" + tokens.get(i) + ".zip", tokens.get(i));
-                        }
-                        if (tokens.size() == 1) {
-                            System.err.println("Incomplete command gzip");
-                        }
-                    } else {
-                        System.out.println("Did you mean gzip?[y/n]");
-                        String resp = sc.next();
-                        if (resp.equalsIgnoreCase("y")) {
-                            for (int i = 1; i < tokens.size(); i++) {
-                                guardarZIP("./" + tokens.get(i), "./" + tokens.get(i) + ".zip", tokens.get(i));
-                            }
-                            if (tokens.size() == 1) {
-                                System.err.println("Incomplete command gzip");
-                            }
-                            guardarArchivo(tokens.get(0));
-                        } else {
-                            System.out.println("Ok!");
-                        }
-                    }
+                }
+            }
+            System.out.println("");
+        } else if (Pattern.matches("[gfdhj][xcz][iopuy][oi+p]", tokens.get(0))) {//gzip
+            if (verificar(tokens.get(0))) {
+                correrGzip(tokens);
+            } else {
+                System.out.println("Did you mean gzip?[y/n]");
+                String resp = sc.next();
+                if (resp.equalsIgnoreCase("y")) {
+                    correrGzip(tokens);
+                }
+            }
+            System.out.println("");
+        } else if (Pattern.matches("[p+oi][iopuy][nm,bv][ghjfd]", tokens.get(0))) {//ping
+            if (verificar(tokens.get(0))) {
+                correrPing(tokens);
+            } else {
+                System.out.println("Did you mean ping?[y/n]");
+                String resp = sc.next();
+                if (resp.equalsIgnoreCase("y")) {
+                    correrPing(tokens);
+                }
+            }
+            System.out.println("");
+        } else {
+            System.err.println("Sorry, \"" + tokens.get(0) + "\" is not recognized 😕");
 
-                } else if (Pattern.matches("[p+oi][iopuy][nm,bv][ghjfd]", tokens.get(0))) {//ping
-                    if (verificar(tokens.get(0))) {
-                        switch (tokens.size()) {
-                            case 1:
-                                System.err.println("Incomplete command ping");
-                                guardarArchivo(tokens.get(0));
-                                break;
-                            case 2:
-                                ping(tokens.get(1));
-                                if(!verificar(tokens.get(0))) guardarArchivo(tokens.get(0));
-                                break;
-                            default:
-                                System.err.println("More arguments than expected");
-                                break;
-                        }
-                    } else {
-                        System.out.println("Did you mean ping?[y/n]");
-                        String resp = sc.next();
-                        if (resp.equalsIgnoreCase("y")) {
-                            switch (tokens.size()) {
-                                case 1:
-                                    System.err.println("Incomplete command ping");
-                                    guardarArchivo(tokens.get(0));
-                                    break;
-                                case 2:
-                                    ping(tokens.get(1));
-                                    guardarArchivo(tokens.get(0));
-                                    break;
-                                default:
-                                    System.err.println("More arguments than expected");
-                                    break;
-                            }
-
-                        } else {
-                            System.out.println("Ok!");
-                        }
-                    }
-                } else {
-                    System.err.println("Sorry, \"" + tokens.get(0) + "\" is not recognized 😕");
-                }
-                break;
         }
+
     }
 }

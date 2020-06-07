@@ -1,5 +1,7 @@
-la
+ls
+gzip
+ping
+
 ld
-gzio
-pimg
-pimg
+gzop
+pong
