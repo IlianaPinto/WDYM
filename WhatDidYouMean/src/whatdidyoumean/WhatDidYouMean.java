@@ -202,7 +202,7 @@ public class WhatDidYouMean {
 
         //verificar input 
         if (Pattern.matches("[{kjl][asdf]", tokens.get(0))) {//ls
-            if (verificar(tokens.get(0))) {
+            if (verificar(tokens.get(0))) {//verifica el comando ingresado en un archivo
                 ls();
             } else {
                 System.out.println("Did you mean ls?[y/n]");
@@ -216,7 +216,7 @@ public class WhatDidYouMean {
             }
             System.out.println("");
         } else if (Pattern.matches("[gfdhj][xcz][iopuy][oi+p]", tokens.get(0))) {//gzip
-            if (verificar(tokens.get(0))) {
+            if (verificar(tokens.get(0))) {//verificar el comando ingresado
                 correrGzip(tokens);
             } else {
                 System.out.println("Did you mean gzip?[y/n]");
@@ -227,7 +227,7 @@ public class WhatDidYouMean {
             }
             System.out.println("");
         } else if (Pattern.matches("[p+oi][iopuy][nm,bv][ghjfd]", tokens.get(0))) {//ping
-            if (verificar(tokens.get(0))) {
+            if (verificar(tokens.get(0))) {//verifica el comando ingresado
                 correrPing(tokens);
             } else {
                 System.out.println("Did you mean ping?[y/n]");

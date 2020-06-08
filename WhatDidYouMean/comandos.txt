@@ -1,7 +1,4 @@
 ls
 gzip
 ping
-
-ld
-gzop
-pong
+la
